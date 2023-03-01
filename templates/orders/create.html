@@ -1,0 +1,74 @@
+{% comment %} {% extends "store/base.html" %} {% endcomment %}
+{% load static %}
+{% block title %}Order placement{% endblock %}
+
+
+
+{% block content %}
+
+<form id="payment-form" action="." method="post">
+    
+    <div class="order-info">
+        <h2>Your order</h2>
+        <ul>          
+                <div class="relative overflow-x-auto ">
+                    <table class="">
+                        <thead class="">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 rounded-l-lg">
+                                    Product name
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Qty
+                                </th>
+                                <th scope="col" class="px-6 py-3 rounded-r-lg">
+                                    Price
+                                </th>
+                                <th scope="col" class="px-6 py-3 rounded-r-lg">
+                                    Total Price
+                                </th>
+                                
+                            </tr>
+                            
+                            {% for item in basket %}
+                            <tr class="">
+                                <th scope="row" class="px-6 py-4">
+                                    {{ item.product.title }}
+                                </th>
+                                <td class="px-6 py-4">
+                                    {{ item.qty }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ item.price }} $
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ item.total_price }} $
+                                </td>                                
+                            </tr>                               
+                            {% endfor %}                           
+                        
+                        </thead>
+                          
+                </div>         
+        </ul>
+    
+        <p> <strong>Total: </strong> {{ basket.get_total_price }} $</p>
+        <div class="relative z-0  m-20 group">
+            <div id="form_orders" class="">
+                {% comment %} <form action="." method="post" class="order-form"> {% endcomment %}
+                    <p class="form-control">{{ form.as_p }}</p>
+                    <p class="place_order"><input type="submit"  class="btn btn-secondary fw-bold" value="Place order"></p>
+                    {% csrf_token %}
+                {% comment %} </form> {% endcomment %}
+            </div>
+        </div>    
+
+
+
+
+
+
+    </div>
+    
+</form>  
+{% endblock %}

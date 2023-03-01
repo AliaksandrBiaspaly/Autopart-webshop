@@ -1,0 +1,82 @@
+{% extends "store/base.html" %}
+{% load static %}
+{% block title %}
+{{ product.name }}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <main class="pt-5">
+        <div class="row g-3">
+            <div class="col-md-5 col-lg-5 order-md-first bg-light">
+                <img class="img-fluid mx-auto d-block" width="200px" alt="Responsive image" src="{{ product.image.url }}">
+            </div>
+            <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
+                <h1 class="mb-0 h4">{{ product.title }}</h1>
+                <span >{{ product.designation }}</span>
+                <p><span class="lead">{{ product.producer }}</span> </p>
+                <p>{{ product.description|slice:":355" }}Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                     Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                     when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived
+                      not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                     It was popularised in the 1960s with the release of Letraset sheets containing</p>
+                <div class="border">
+                    <div class="col border-bottom">
+                        <div class="row p-3">
+                            <div class="col-6">Price per unit</div>
+                            <div class="col-6 text-end"><span class="h4 fw-bold">${{ product.price }}</span></div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row p-3">
+                            <div class="col-6">
+                                <label for="select">Quantity available for order: </label>
+                                <input id="quantity1"   value ={{ product.quantity }} />
+                                <input id="quantity" type="number" placeholder="Enter quantity here"  class="btn btn-outline-secondary"/>
+                            </div>
+                            <div class="col-6 text-end">
+                                <button  type="button" id="add-button" value={{product.id}} class="btn btn-secondary btn-sm">Add to
+                                    basket</button>
+                                {% comment %} </button>
+                                <button type="button" id="basket-qty" class="btn btn-secondary btn-sm">basket-qty
+                                </button> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
+<script> 
+    $(document).on('click', '#add-button', function (e) {
+        console.log($("#quantity1").val())
+        console.log($("#quantity").val())
+        if (parseInt($("#quantity1").val())>parseInt($("#quantity").val())){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "basket:basket_add" %}',
+            data: {
+                productid: $('#add-button').val(),
+                productqty: $("#quantity").val(),
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: 'post'
+            },
+            success: function (json) {
+               document.getElementById("basket-qty").innerHTML = json.qty
+            },
+            error: function (xhr, errmsg, err) {}
+        });
+    } else if (parseInt($("#quantity1").val())<parseInt($("#quantity").val())){
+            console.log("Error")
+            alert("Quantity more than available");
+        }
+})
+
+</script>
+
+{% endblock %}
